@@ -40,16 +40,26 @@ const Dashboard = () => {
     loadStats();
   }, []);
 
-  const handleReport = () => {
+  const handleReport = async () => {
     setReportLoading(true);
-    const blob = new Blob([JSON.stringify(stats, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `cms-dashboard-report-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setReportLoading(false);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/analytics/report`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Failed to generate report');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `BDL-CMS-Master-Report-${new Date().toISOString().slice(0, 10)}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Could not generate report: ' + err.message);
+    } finally {
+      setReportLoading(false);
+    }
   };
 
   if (loading) {
