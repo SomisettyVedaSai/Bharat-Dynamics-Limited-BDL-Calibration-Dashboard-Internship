@@ -1,0 +1,187 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  employee_no   String   @unique
+  name          String
+  email         String   @unique
+  password_hash String
+  role          String   @default("Viewer") // Admin, Inspector, Calibration Engineer, Viewer
+  id_proof_url  String?
+  created_at    DateTime @default(now())
+}
+
+model EquipmentMaster {
+  equipment_id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  equipment_no            String   @unique
+  equipment_type          String
+  description_name        String
+  material_code           String?
+  serial_no               String?
+  manufacturer_no         String?
+  technical_no            String?
+  range_min               Float
+  range_max               Float
+  accuracy                Float?
+  least_count             Float?
+  deviation_allowed       Float?
+  q01_tolerance           Float    @default(0.01)
+  unit                    String
+  plant_location_id       String?  @db.ObjectId
+  storage_location_id     String?  @db.ObjectId
+  maintenance_plan_id     String?  @db.ObjectId
+  factory_calendar_id     String?  @db.ObjectId
+  periodicity_value        Int
+  periodicity_unit         String   // Days, Months, Years
+  calibration_start_date   DateTime?
+  calibration_due_date     DateTime?
+  current_status           String   // Active, Under Calibration, Scrapped, General Store
+  calibration_standard_id  String?  @db.ObjectId
+  created_at               DateTime @default(now())
+
+  // New requested fields
+  maintenance_plan         String?
+  plant_location           String?
+  storage_location         String?
+  plant_name               String?
+  place                    String?
+  pincode                  String?
+  employee_id              String?
+  employee_name            String?
+  qr_code_scanned          String?
+
+  calibration_records CalibrationRecord[]
+  inspection_records  InspectionRecord[]
+  status_histories    StatusHistory[]
+}
+
+model CalibrationRecord {
+  calibration_id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  equipment_id     String   @db.ObjectId
+  calibration_date DateTime
+  next_due_date    DateTime
+  nominal_value    Float
+  measured_value   Float
+  tolerance_value  Float
+  lower_limit      Float
+  upper_limit      Float
+  error_value      Float
+  pass_fail_q01    Boolean
+  result           String // PASS, FAIL
+  calibrated_by    String
+  approved_by      String?
+  record_hash      String? // Cryptographic hash for audit
+  remarks          String?
+
+  equipment              EquipmentMaster          @relation(fields: [equipment_id], references: [equipment_id])
+  inspection_records     InspectionRecord[]
+  calibration_certificates CalibrationCertificate[]
+  narratives             InstrumentNarrative[]
+}
+
+model InspectionRecord {
+  inspection_id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  equipment_id               String   @db.ObjectId
+  calibration_id             String?  @db.ObjectId
+  rust_status                String // OK, NOT OK
+  rust_description           String?
+  dent_status                String // OK, NOT OK
+  dent_description           String?
+  damage_status              String // OK, NOT OK
+  damage_description         String?
+  surface_finish_status      String // OK, NOT OK
+  surface_finish_description String?
+  go_size                    Float?
+  no_go_size                 Float?
+  remarks                    String?
+  inspected_by               String
+
+  equipment   EquipmentMaster    @relation(fields: [equipment_id], references: [equipment_id])
+  calibration CalibrationRecord? @relation(fields: [calibration_id], references: [calibration_id])
+}
+
+model MaintenancePlan {
+  maintenance_plan_id  String @id @default(auto()) @map("_id") @db.ObjectId
+  plan_name            String
+  calendar_type        String @default("normal") // normal or factory
+  frequency_value      Int
+  frequency_unit       String
+  reminder_before_days Int
+}
+
+model StatusHistory {
+  history_id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  equipment_id String   @db.ObjectId
+  old_status   String
+  new_status   String
+  changed_by   String
+  changed_at   DateTime @default(now())
+
+  equipment EquipmentMaster @relation(fields: [equipment_id], references: [equipment_id])
+}
+
+model CalibrationCertificate {
+  certificate_id String   @id @default(auto()) @map("_id") @db.ObjectId
+  calibration_id String   @db.ObjectId
+  certificate_no String   @unique
+  pdf_path       String?
+  label_path     String?
+  generated_date DateTime @default(now())
+  approved_by    String?
+
+  calibration CalibrationRecord @relation(fields: [calibration_id], references: [calibration_id])
+}
+
+model CalibrationStandard {
+  standard_id    String   @id @default(auto()) @map("_id") @db.ObjectId
+  standard_name  String
+  certificate_no String
+  valid_upto     DateTime
+}
+
+model Location {
+  location_id   String @id @default(auto()) @map("_id") @db.ObjectId
+  location_name String
+  location_type String // Plant, Storage, Store
+}
+
+model FactoryCalendar {
+  calendar_id    String   @id @default(auto()) @map("_id") @db.ObjectId
+  date           DateTime @db.Date
+  is_working_day Boolean  @default(true)
+  description    String?
+
+  @@unique([date])
+}
+
+model InstrumentNarrative {
+  narrative_id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  calibration_id         String   @db.ObjectId
+  characteristic_name    String
+  explanation            String?
+  weakness               String?
+  summary_paragraph      String?
+  memory_story           String?
+  picture_url            String?
+  outline_text           String?
+  storyboard_json        String? // MongoDB doesn't use @db.Text like Postgres
+  character_description  String?
+  setting_description    String?
+  plot_description       String?
+  theme_description      String?
+  conflict_description   String?
+  resolution_description String?
+  created_at             DateTime @default(now())
+
+  calibration CalibrationRecord @relation(fields: [calibration_id], references: [calibration_id])
+}
