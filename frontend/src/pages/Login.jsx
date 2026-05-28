@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Shield, User, Lock, Loader2 } from 'lucide-react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { Shield, User, Lock, Loader2, CheckCircle } from 'lucide-react';
+import { useNavigate, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api, { getErrorMessage } from '../api/client';
 
@@ -11,8 +11,11 @@ const Login = () => {
   const [error, setError] = useState('');
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+
+  const isRegistered = location.state?.registered;
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -41,9 +44,17 @@ const Login = () => {
             <p className="text-gray-400 mt-2">Secure access to industrial instruments</p>
           </div>
 
+          {isRegistered && !error && (
+            <div className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm flex items-center">
+              <CheckCircle className="w-5 h-5 mr-2 flex-shrink-0" />
+              <span>Registration successful! Please sign in with your credentials.</span>
+            </div>
+          )}
+
           {error && (
             <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">{error}</div>
           )}
+
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
@@ -91,8 +102,12 @@ const Login = () => {
             </button>
           </form>
 
-          <p className="text-center text-gray-500 text-xs mt-6">
-            First time? Register via POST /api/auth/register or ask your admin.
+          <p className="text-center text-gray-400 text-sm mt-6">
+            First time?{' '}
+            <Link to="/register" className="text-blue-500 hover:underline">
+              Register here
+            </Link>{' '}
+            or ask your admin.
           </p>
         </div>
       </div>

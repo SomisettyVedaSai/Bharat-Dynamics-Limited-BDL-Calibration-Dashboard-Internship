@@ -13,12 +13,15 @@ import CertificatesPage from './pages/CertificatesPage';
 import NarrativeGallery from './pages/NarrativeGallery';
 import NarrativeWizard from './pages/NarrativeWizard';
 import SettingsPage from './pages/SettingsPage';
+import Register from './pages/Register';
+
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
