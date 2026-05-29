@@ -307,4 +307,4 @@ node scripts/run-e2e-tests.js
 
 ---
 
-> Built with ❤️ for quality assurance and precision engineering operations at **Bharat Dynamics Limited (BDL)**, Hyderabad — Internship Project 2025.
+> Built with ❤️ for quality assurance and precision engineering operations at **Bharat Dynamics Limited (BDL)**, Hyderabad — Internship Project 2026.
