@@ -26,6 +26,8 @@
 - **Calibration History** — full audit trail of every calibration session
 - **Calibration Certificates** — view and download certificates per calibration event
 - **Analytics overview** on main dashboard with charts
+- **Dual Master Report Generation** — export both structured Excel (`.xlsx`) and print-ready BDL-branded A4 PDF (`.pdf`) master status reports sequentially in one click
+- **Premium Light Theme Design** — clean white (#FFFFFF) visual layout with optimized high-contrast components, light slate borders, and custom chart themes
 
 ### 📖 Narrative System
 - Wizard-based inspection narrative creation
@@ -258,7 +260,9 @@ node scripts/run-e2e-tests.js
 | GET | `/api/calibration` | List calibration records |
 | POST | `/api/calibration` | Submit a calibration record |
 | GET | `/api/certificates` | List certificates |
-| GET | `/api/analytics` | Dashboard analytics data |
+| GET | `/api/analytics/dashboard` | Dashboard stats & analytics charts |
+| GET | `/api/analytics/report` | Download Master Status Report as Excel (`.xlsx`) |
+| GET | `/api/analytics/report-pdf` | Download Master Status Report as A4 PDF (`.pdf`) |
 | GET | `/api/calendar` | Factory calendar |
 | GET | `/api/health` | Backend health check |
 
