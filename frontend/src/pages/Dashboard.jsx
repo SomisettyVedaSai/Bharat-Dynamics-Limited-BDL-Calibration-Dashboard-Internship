@@ -43,20 +43,26 @@ const Dashboard = () => {
   const handleReport = async () => {
     setReportLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/analytics/report`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error('Failed to generate report');
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `BDL-CMS-Master-Report-${new Date().toISOString().slice(0, 10)}.xlsx`;
-      a.click();
-      URL.revokeObjectURL(url);
+      // 1. Fetch and download Excel Report
+      const excelRes = await api.get('/analytics/report', { responseType: 'blob' });
+      const excelUrl = URL.createObjectURL(excelRes.data);
+      const aExcel = document.createElement('a');
+      aExcel.href = excelUrl;
+      aExcel.download = `BDL-CMS-Master-Report-${new Date().toISOString().slice(0, 10)}.xlsx`;
+      aExcel.click();
+      URL.revokeObjectURL(excelUrl);
+
+      // 2. Fetch and download PDF Report
+      const pdfRes = await api.get('/analytics/report-pdf', { responseType: 'blob' });
+      const pdfUrl = URL.createObjectURL(pdfRes.data);
+      const aPdf = document.createElement('a');
+      aPdf.href = pdfUrl;
+      aPdf.download = `BDL-CMS-Master-Report-${new Date().toISOString().slice(0, 10)}.pdf`;
+      aPdf.click();
+      URL.revokeObjectURL(pdfUrl);
+
     } catch (err) {
-      alert('Could not generate report: ' + err.message);
+      alert('Could not generate reports: ' + getErrorMessage(err));
     } finally {
       setReportLoading(false);
     }
@@ -111,10 +117,10 @@ const Dashboard = () => {
             {charts.passFailData?.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={charts.passFailData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
-                  <XAxis dataKey="month" stroke="#9CA3AF" />
-                  <YAxis stroke="#9CA3AF" />
-                  <RechartsTooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff' }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                  <XAxis dataKey="month" stroke="#64748b" />
+                  <YAxis stroke="#64748b" />
+                  <RechartsTooltip contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0', color: '#0f172a', borderRadius: '8px' }} />
                   <Legend />
                   <Bar dataKey="pass" name="Passed" fill="#10B981" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="fail" name="Failed" fill="#EF4444" radius={[4, 4, 0, 0]} />
@@ -136,10 +142,10 @@ const Dashboard = () => {
               {charts.driftData?.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={charts.driftData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                     <XAxis dataKey="date" hide />
-                    <YAxis stroke="#9CA3AF" fontSize={10} width={40} />
-                    <RechartsTooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff' }} />
+                    <YAxis stroke="#64748b" fontSize={10} width={40} />
+                    <RechartsTooltip contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0', color: '#0f172a', borderRadius: '8px' }} />
                     <Line type="monotone" dataKey="error" name="Drift Error" stroke="#3B82F6" strokeWidth={3} dot={{ r: 4, fill: '#3B82F6' }} />
                   </LineChart>
                 </ResponsiveContainer>

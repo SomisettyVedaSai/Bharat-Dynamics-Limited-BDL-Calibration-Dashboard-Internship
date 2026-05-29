@@ -4,9 +4,9 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: #1e293b;
+  background-color: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -17,4 +17,226 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+/* --------------------------------------------------
+   CMS SYSTEM — PREMIUM LIGHT MODE STYLE OVERRIDES
+   -------------------------------------------------- */
+
+/* Background Overrides */
+.bg-\[\#121319\] {
+  background-color: #ffffff !important;
+}
+
+.bg-\[\#1a1c23\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+.bg-\[\#242731\] {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+.bg-\[\#242731\] button, 
+.bg-\[\#242731\] a, 
+.bg-\[\#242731\] .text-white, 
+button.bg-\[\#242731\], 
+a.bg-\[\#242731\] {
+  color: #1e293b !important;
+}
+
+.bg-\[\#1f2230\] {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.bg-\[\#1c1e27\] {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+.bg-black\/60 {
+  background-color: rgba(15, 23, 42, 0.4) !important; /* Soft modal backdrop */
+}
+
+/* Background Opacity and Hover State Overrides */
+.hover\:bg-gray-800:hover {
+  background-color: #f1f5f9 !important;
+}
+
+.hover\:bg-white\/\[0\.02\]:hover {
+  background-color: #f8fafc !important;
+}
+
+.hover\:bg-blue-500\/10:hover {
+  background-color: #eff6ff !important;
+}
+
+.hover\:bg-red-500\/10:hover {
+  background-color: #fef2f2 !important;
+}
+
+.hover\:bg-gray-700:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+button.hover\:bg-gray-700:hover, 
+a.hover\:bg-gray-700:hover, 
+.hover\:bg-gray-700:hover * {
+  color: #0f172a !important;
+}
+
+.bg-\[\#242731\]\/30 {
+  background-color: rgba(241, 245, 249, 0.5) !important;
+}
+
+.bg-\[\#242731\]\/50 {
+  background-color: rgba(241, 245, 249, 0.8) !important;
+}
+
+/* Border Overrides */
+.border-gray-800 {
+  border-color: #e2e8f0 !important;
+}
+
+.border-gray-700 {
+  border-color: #cbd5e1 !important;
+}
+
+.border-gray-600 {
+  border-color: #cbd5e1 !important;
+}
+
+.border-gray-800\/40 {
+  border-color: rgba(226, 232, 240, 0.4) !important;
+}
+
+.border-gray-700\/60 {
+  border-color: rgba(203, 213, 225, 0.6) !important;
+}
+
+/* Text Overrides */
+.text-gray-200 {
+  color: #1e293b !important;
+}
+
+.text-gray-300 {
+  color: #334155 !important;
+}
+
+.text-gray-400 {
+  color: #475569 !important;
+}
+
+.text-gray-500 {
+  color: #64748b !important;
+}
+
+/* Status Badges, Alerts, and Highlights */
+.text-green-400 {
+  color: #16a34a !important;
+}
+.bg-green-500\/10 {
+  background-color: #f0fdf4 !important;
+}
+.border-green-500\/20 {
+  border-color: #bbf7d0 !important;
+}
+
+.text-red-400 {
+  color: #dc2626 !important;
+}
+.bg-red-500\/10 {
+  background-color: #fef2f2 !important;
+}
+.border-red-500\/20 {
+  border-color: #fecaca !important;
+}
+
+.text-yellow-400 {
+  color: #d97706 !important;
+}
+.bg-yellow-500\/10 {
+  background-color: #fffbeb !important;
+}
+.border-yellow-500\/20 {
+  border-color: #fef3c7 !important;
+}
+
+.text-blue-400 {
+  color: #2563eb !important;
+}
+.bg-blue-500\/10 {
+  background-color: #eff6ff !important;
+}
+.border-blue-500\/20 {
+  border-color: #bfdbfe !important;
+}
+
+.bg-blue-600\/10 {
+  background-color: #eff6ff !important;
+}
+.bg-red-500\/5 {
+  background-color: #fef2f2 !important;
+}
+.border-red-500\/10 {
+  border-color: #fca5a5 !important;
+}
+
+.text-blue-500 {
+  color: #2563eb !important;
+}
+
+.hover\:text-white:hover {
+  color: #0f172a !important;
+}
+
+/* Selective text-white Overrides (protecting buttons, links, solid fills) */
+.text-white {
+  color: #0f172a !important;
+}
+
+/* Preserve actual white text color only for elements with dark/colored backgrounds */
+.bg-blue-600 .text-white, .bg-blue-600.text-white,
+.bg-red-600 .text-white, .bg-red-600.text-white,
+.bg-green-600 .text-white, .bg-green-600.text-white,
+.bg-blue-700 .text-white, .bg-blue-700.text-white,
+.bg-red-700 .text-white, .bg-red-700.text-white,
+.bg-green-700 .text-white, .bg-green-700.text-white,
+.bg-blue-500 .text-white, .bg-blue-500.text-white,
+.bg-red-500 .text-white, .bg-red-500.text-white,
+.bg-green-500 .text-white, .bg-green-500.text-white,
+.bg-yellow-600 .text-white, .bg-yellow-600.text-white,
+.bg-gray-800 .text-white, .bg-gray-800.text-white,
+.bg-gray-900 .text-white, .bg-gray-900.text-white,
+button.bg-blue-600, button.bg-red-600, button.bg-green-600, button.bg-blue-700, button.bg-red-700, button.bg-gray-800, button.bg-gray-900,
+button.bg-blue-600 *, button.bg-red-600 *, button.bg-green-600 *, button.bg-blue-700 *, button.bg-red-700 *, button.bg-gray-800 *, button.bg-gray-900 * {
+  color: #ffffff !important;
+}
+
+/* Specific elements like forms, inputs, dropdown options */
+input, select, textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #3b82f6 !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Calendar input fix */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.2);
 }

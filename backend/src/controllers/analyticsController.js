@@ -1,6 +1,7 @@
 const prisma = require('../utils/db');
 const { mapPrismaError } = require('../utils/prismaErrors');
 const XLSX = require('xlsx');
+const reportPdfGenerator = require('../services/reportPdfGenerator');
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -254,6 +255,73 @@ exports.getMasterReport = async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.send(buf);
+  } catch (error) {
+    const mapped = mapPrismaError(error);
+    res.status(mapped.status).json({ error: mapped.message });
+  }
+};
+
+exports.getMasterReportPdf = async (req, res) => {
+  try {
+    const [equipment, calibrations] = await Promise.all([
+      prisma.equipmentMaster.findMany({
+        orderBy: { created_at: 'asc' },
+      }),
+      prisma.calibrationRecord.findMany({
+        orderBy: { calibration_date: 'desc' },
+        include: {
+          equipment: {
+            select: {
+              equipment_no: true,
+              description_name: true,
+              serial_no: true,
+              unit: true,
+              plant_location: true,
+              storage_location: true,
+              equipment_type: true,
+              current_status: true,
+              calibration_due_date: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    // Compute stats matching the Excel sheet summary
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    
+    const dueCount = equipment.filter(
+      (e) => e.calibration_due_date && new Date(e.calibration_due_date) <= today && ['Active', 'Due'].includes(e.current_status)
+    ).length;
+    const failedCount = equipment.filter((e) => ['Failed', 'Scrapped'].includes(e.current_status)).length;
+    const underCalCount = equipment.filter((e) => e.current_status === 'Under Calibration').length;
+    const generalStoreCount = equipment.filter((e) => e.current_status === 'General Store').length;
+    const activeCount = equipment.filter((e) => e.current_status === 'Active').length;
+    
+    const totalCals = calibrations.length;
+    const totalPass = calibrations.filter((c) => c.result === 'PASS').length;
+    const totalFail = calibrations.filter((c) => c.result === 'FAIL').length;
+    const passRate = totalCals > 0 ? ((totalPass / totalCals) * 100).toFixed(1) + '%' : 'N/A';
+
+    const summary = {
+      dueCount,
+      failedCount,
+      underCalCount,
+      generalStoreCount,
+      activeCount,
+      totalCals,
+      totalPass,
+      totalFail,
+      passRate
+    };
+
+    const pdfBuffer = await reportPdfGenerator.generateMasterReportPDF(equipment, calibrations, summary);
+    const filename = `BDL-CMS-Master-Report-${new Date().toISOString().slice(0, 10)}.pdf`;
+
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.send(pdfBuffer);
   } catch (error) {
     const mapped = mapPrismaError(error);
     res.status(mapped.status).json({ error: mapped.message });
